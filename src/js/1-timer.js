@@ -7,14 +7,11 @@ const startBtn = document.querySelector('button[data-start]');
 const inputPicker = document.querySelector('#datetime-picker');
 const dataDays = document.querySelector('span[data-days]');
 const dataHours = document.querySelector('span[data-hours]');
-const dataMins = document.querySelector('span[data-minutes]');
-const dataSecs = document.querySelector('span[data-seconds]');
-
-startBtn.addEventListener('click', timerStart);
-inputPicker.addEventListener('change', choiceDate);
+const dataMinutes = document.querySelector('span[data-minutes]');
+const dataSeconds = document.querySelector('span[data-seconds]');
 
 let userSelectedDate = null;
-let intervalId;
+let intervalId = null;
 
 startBtn.disabled = true;
 
@@ -30,10 +27,37 @@ function convertMs(ms) {
 
   const days = Math.floor(ms / day);
   const hours = Math.floor((ms % day) / hour);
-  const mins = Math.floor(((ms % day) % hour) / minute);
-  const secs = Math.floor((((ms % day) % hour) % minute) / second);
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
-  return { days, hours, mins, secs };
+  return { days, hours, minutes, seconds };
+}
+
+function updateTimer(days, hours, minutes, seconds) {
+  dataDays.textContent = addLeadingZero(days);
+  dataHours.textContent = addLeadingZero(hours);
+  dataMinutes.textContent = addLeadingZero(minutes);
+  dataSeconds.textContent = addLeadingZero(seconds);
+}
+
+function timerStart() {
+  startBtn.disabled = true;
+  inputPicker.disabled = true;
+
+  intervalId = setInterval(() => {
+    const currentDate = new Date();
+    const remainingTime = userSelectedDate - currentDate;
+
+    if (remainingTime <= 0) {
+      clearInterval(intervalId);
+      updateTimer(0, 0, 0, 0);
+      inputPicker.disabled = false;
+      return;
+    }
+
+    const { days, hours, minutes, seconds } = convertMs(remainingTime);
+    updateTimer(days, hours, minutes, seconds);
+  }, 1000);
 }
 
 const options = {
@@ -62,40 +86,4 @@ const options = {
 };
 
 flatpickr(inputPicker, options);
-
-function timerStart() {
-  startBtn.disabled = true;
-  inputPicker.disabled = true;
-
-  intervalId = setInterval(() => {
-    const currentDate = new Date();
-    const timer = userSelectedDate - currentDate;
-
-    if (timer <= 0) {
-      clearInterval(intervalId);
-      updateTimer(0, 0, 0, 0);
-      inputPicker.disabled = false;
-      return;
-    }
-
-    const { days, hours, mins, secs } = convertMs(timer);
-    updateTimer(days, hours, mins, secs);
-  }, 1000);
-}
-
-function updateTimer(days, hours, mins, secs) {
-  dataDays.textContent = addLeadingZero(days);
-  dataHours.textContent = addLeadingZero(hours);
-  dataMins.textContent = addLeadingZero(mins);
-  dataSecs.textContent = addLeadingZero(secs);
-}
-
-function choiceDate(event) {
-  userSelectedDate = new Date(event.target.value);
-
-  if (userSelectedDate > new Date()) {
-    startBtn.disabled = false;
-  } else {
-    startBtn.disabled = true;
-  }
-}
+startBtn.addEventListener('click', timerStart);
