@@ -22,4 +22,3 @@ jobs:
           branch: gh-pages
           folder: dist
           token: ${{ secrets.GH_PAT }}
-ц
