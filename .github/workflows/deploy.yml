@@ -21,4 +21,4 @@ jobs:
         with:
           branch: gh-pages
           folder: dist
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.GH_PAT10 }}
