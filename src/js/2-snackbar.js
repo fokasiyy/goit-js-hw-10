@@ -8,14 +8,21 @@ function createPromise(event) {
   event.preventDefault();
 
   const promiseState = event.target.elements.state.value;
-  const delay = event.target.elements.delay.value;
+  const delay = Number(event.target.elements.delay.value);
 
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
       if (promiseState === 'fulfilled') {
         resolve(delay);
+      } else if (promiseState === 'rejected') {
+        reject(delay);
+      } else {
+        
+        iziToast.error({
+          message: `❗ Невідомий стан промісу: "${promiseState}"`,
+          position: 'topRight',
+        });
       }
-      reject(delay);
     }, delay);
   });
 
@@ -40,5 +47,6 @@ function createPromise(event) {
         messageColor: '#fff',
       });
     });
+
   formEl.reset();
 }
