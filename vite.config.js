@@ -5,7 +5,7 @@ import FullReload from 'vite-plugin-full-reload';
 
 export default defineConfig(({ command }) => {
   return {
-    base: '/goit-js-hw-10/', // 🔥 ЗАМІНИ назву репозиторію, якщо інша!
+    base: '/goit-js-hw-10/',
     define: {
       [command === 'serve' ? 'global' : '_global']: {},
     },
@@ -15,7 +15,7 @@ export default defineConfig(({ command }) => {
       outDir: '../dist',
       emptyOutDir: true,
       rollupOptions: {
-        input: glob.sync('./src/*.html'),
+        input: glob.sync('src/*.html'),
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
@@ -39,7 +39,7 @@ export default defineConfig(({ command }) => {
     },
     plugins: [
       injectHTML(),
-      FullReload(['./src/**/*.html']),
+      FullReload(['src/**/*.html']),
     ],
   };
 });
